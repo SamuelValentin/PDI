@@ -24,13 +24,16 @@ N_PIXELS_MIN = 1
 #===============================================================================
 
 def binariza (img, threshold):
-    ''' Binarização simples por limiarização.
+    
+    return img
+    
+#     ''' Binarização simples por limiarização.
 
-Parâmetros: img: imagem de entrada. Se tiver mais que 1 canal, binariza cada
-              canal independentemente.
-            threshold: limiar.
+# Parâmetros: img: imagem de entrada. Se tiver mais que 1 canal, binariza cada
+#               canal independentemente.
+#             threshold: limiar.
             
-Valor de retorno: versão binarizada da img_in.'''
+# Valor de retorno: versão binarizada da img_in.'''
 
     # TODO: escreva o código desta função.
     # Dica/desafio: usando a função np.where, dá para fazer a binarização muito
