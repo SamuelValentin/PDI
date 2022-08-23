@@ -5,7 +5,7 @@
 # Universidade Tecnológica Federal do Paraná
 #===============================================================================
 
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 from email.errors import FirstHeaderLineIsContinuationDefect
 from operator import truediv
 import sys
@@ -50,6 +50,7 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
     label = 0
     
     mask = img
+    mask = np.where(mask == 0.99, 0, -1)
  
     # height, width, number of channels in image
     height = img.shape[0]
@@ -57,8 +58,8 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
     
     for i in range(height):
         for j in range(width):
-            if(img[i,j] == 0.99):
-                label = (label + 0.1)
+            if(img[i,j] == 0.99 and mask[i,j] == -1):
+                label = (label + 1)
                 # mask[i,j] = label 
                 floodfillRec(mask, label, i, j)
                
@@ -91,11 +92,14 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
 def floodfillRec(img, label, y, x):
     img[y,x] = label
     
+    i = y - 1
+    j = x - 1
+    
     #visita vizinho
-    for i in range(4):
-        for j in range(4):
-            if((img[i,j] != NULL) and  (img[i,j] > 0)):
-                floodfillRec(img, label, y, x)
+    for i in range(3):
+        for j in range(3):
+            if((img[i,j] == -1) and  (i >= 0) and (j >= 0)):
+                floodfillRec(img, label, i, j)
             
 
 def main ():
