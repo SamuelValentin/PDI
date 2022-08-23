@@ -5,8 +5,12 @@
 # Universidade Tecnológica Federal do Paraná
 #===============================================================================
 
+from asyncio.windows_events import NULL
+from email.errors import FirstHeaderLineIsContinuationDefect
+from operator import truediv
 import sys
 import timeit
+from tkinter.ttk import LabelFrame
 import numpy as np
 import cv2
 
@@ -43,29 +47,56 @@ def binariza (img, threshold):
 
 def rotula (img, largura_min, altura_min, n_pixels_min):
     componentes = 0
+    label = 0
     
-    '''Rotulagem usando flood fill. Marca os objetos da imagem com os valores
-[0.1,0.2,etc].
-
-Parâmetros: img: imagem de entrada E saída.
-            largura_min: descarta componentes com largura menor que esta.
-            altura_min: descarta componentes com altura menor que esta.
-            n_pixels_min: descarta componentes com menos pixels que isso.
-
-Valor de retorno: uma lista, onde cada item é um vetor associativo (dictionary)
-com os seguintes campos:
-
-'label': rótulo do componente.
-'n_pixels': número de pixels do componente.
-'T', 'L', 'B', 'R': coordenadas do retângulo envolvente de um componente conexo,
-respectivamente: topo, esquerda, baixo e direita.'''
-
+    mask = img
+ 
+    # height, width, number of channels in image
+    height = img.shape[0]
+    width = img.shape[1]
+    
+    for i in range(height):
+        for j in range(width):
+            if(img[i,j] == 0.99):
+                label = (label + 0.1)
+                # mask[i,j] = label 
+                floodfillRec(mask, label, i, j)
+               
+    # print(mask)
+    print(label)
+    
     return componentes 
+
+    # '''Rotulagem usando flood fill. Marca os objetos da imagem com os valores
+    # [0.1,0.2,etc].
+
+    # Parâmetros: img: imagem de entrada E saída.
+    #             largura_min: descarta componentes com largura menor que esta.
+    #             altura_min: descarta componentes com altura menor que esta.
+    #             n_pixels_min: descarta componentes com menos pixels que isso.
+
+    # Valor de retorno: uma lista, onde cada item é um vetor associativo (dictionary)
+    # com os seguintes campos:
+
+    # 'label': rótulo do componente.
+    # 'n_pixels': número de pixels do componente.
+    # 'T', 'L', 'B', 'R': coordenadas do retângulo envolvente de um componente conexo,
+    # respectivamente: topo, esquerda, baixo e direita.'''
 
     # TODO: escreva esta função.
     # Use a abordagem com flood fill recursivo.
 
 #===============================================================================
+
+def floodfillRec(img, label, y, x):
+    img[y,x] = label
+    
+    #visita vizinho
+    for i in range(4):
+        for j in range(4):
+            if((img[i,j] != NULL) and  (img[i,j] > 0)):
+                floodfillRec(img, label, y, x)
+            
 
 def main ():
 
@@ -90,8 +121,8 @@ def main ():
     cv2.imshow ('01 - binarizada', img)
     cv2.imwrite ('01 - binarizada.png', img*255)
 
-    # start_time = timeit.default_timer ()
-    # componentes = rotula (img, LARGURA_MIN, ALTURA_MIN, N_PIXELS_MIN)
+    start_time = timeit.default_timer ()
+    componentes = rotula (img, LARGURA_MIN, ALTURA_MIN, N_PIXELS_MIN)
     # n_componentes = len (componentes)
     # print ('Tempo: %f' % (timeit.default_timer () - start_time))
     # print ('%d componentes detectados.' % n_componentes)
@@ -103,6 +134,8 @@ def main ():
     # cv2.imshow ('02 - out', img_out)
     # cv2.imwrite ('02 - out.png', img_out*255)
     # cv2.waitKey ()
+    
+    print(componentes)
     cv2.destroyAllWindows ()
 
 
