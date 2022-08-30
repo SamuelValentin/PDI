@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------
 # Universidade Tecnologica Federal do Parana
 # Professor: Bogdan T. Nassu
-# Aluno: Yan Pietrzak Pinheiro
+# Aluno: Samuel Leal Valentin e Yan Pietrzak Pinheiro
 #=================================================================
 
 import sys
