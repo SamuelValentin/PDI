@@ -32,13 +32,13 @@ def binariza (img, threshold):
     img = np.where(img < threshold, 0.0, 1.0)
     return img
     
-#     ''' Binarização simples por limiarização.
+    #     ''' Binarização simples por limiarização.
 
-# Parâmetros: img: imagem de entrada. Se tiver mais que 1 canal, binariza cada
-#               canal independentemente.
-#             threshold: limiar.
-            
-# Valor de retorno: versão binarizada da img_in.'''
+    # Parâmetros: img: imagem de entrada. Se tiver mais que 1 canal, binariza cada
+    #               canal independentemente.
+    #             threshold: limiar.
+                
+    # Valor de retorno: versão binarizada da img_in.'''
 
     # TODO: escreva o código desta função.
     # Dica/desafio: usando a função np.where, dá para fazer a binarização muito
@@ -47,7 +47,7 @@ def binariza (img, threshold):
 #-------------------------------------------------------------------------------
 
 def rotula (img, largura_min, altura_min, n_pixels_min):
-    result = []
+    componentes = []
     auxRes = []
 
     label = 1
@@ -57,10 +57,9 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
     botCord = -1 
     rightCord = -1
     
-    #Rotulamento inicial, -1 e 0
     img = np.where(img == 1.0, -1, 0)
     
-    print("Flood Fill..."+'\n')
+    print("Flood Fill")
     height = img.shape[0]
     width = img.shape[1]
 
@@ -70,7 +69,7 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
                 floodfillRec(img,label,i,j)
                 label = label + 1
 
-    print("Dict building..."+'\n')
+    print("Dict building")
     for lab in range(1,label):
         newDict = {
                 "label": lab,
@@ -81,14 +80,11 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
                 "R": rightCord,
         }
         auxRes.append(newDict)
-        
-    #Percorre cada pixel
+
     for i in range(height):
         for j in range(width):
             if img[i,j] > 0:
-                #Encontra o correspondente
                 c = auxRes[int(img[i,j])-1] 
-                #Faz o update no contador de pixel e se necessário nos pontos cardiais 
                 c['n_pixels'] = c['n_pixels'] + 1
                 if(j < c['L']):
                     c['L'] = j
@@ -100,17 +96,13 @@ def rotula (img, largura_min, altura_min, n_pixels_min):
                     c['B'] = i
                 auxRes[int(img[i,j])-1] = c
     
-    #Percorre cada componente no vetor auxiliar
-    #Se o componente satisfazer o critério minimo de tamanho, altura e largura
-    #Vai ser adicionado no vetor de resultado 
     for comp in auxRes:
         if comp['n_pixels'] >= n_pixels_min:
             if comp['R'] - comp['L'] >= largura_min:
                  if comp['B'] - comp['T'] >= altura_min:
-                    result.append(comp)
+                    componentes.append(comp)
                     
-    return result
-
+    return componentes
 
     # '''Rotulagem usando flood fill. Marca os objetos da imagem com os valores
     # [0.1,0.2,etc].
@@ -182,7 +174,7 @@ def main ():
 
     cv2.imshow ('02 - out', img_out)
     cv2.imwrite ('02 - out.png', img_out*255)
-    # cv2.waitKey ()
+    cv2.waitKey ()
     cv2.destroyAllWindows ()
 
 
