@@ -13,7 +13,7 @@ import numpy as np
 
 #=================================================================
 
-INPUT_IMAGE =  "Original.bmp"
+INPUT_IMAGE =  "Exemplos/Original.bmp"
 INPUT_IMAGE = os.path.join(sys.path[0], INPUT_IMAGE)
 print (os.path.isfile(INPUT_IMAGE))
 INPUT_IMAGE = INPUT_IMAGE.replace("\\","/")
