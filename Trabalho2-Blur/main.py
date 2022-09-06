@@ -13,7 +13,7 @@ import numpy as np
 
 #=================================================================
 
-INPUT_IMAGE =  "Exemplos/Original.bmp"
+INPUT_IMAGE =  "Exemplos/a01 - Original.bmp"
 INPUT_IMAGE = os.path.join(sys.path[0], INPUT_IMAGE)
 print (os.path.isfile(INPUT_IMAGE))
 INPUT_IMAGE = INPUT_IMAGE.replace("\\","/")
@@ -23,15 +23,25 @@ W_SIZE = 7
 
 #TODO as funcoes
 
-def blur_ingenuo (img):
+def blur_ingenuo (img,img_out):
     img_length = img.shape[0]
     img_width = img.shape[1]
+   
+    w = 3
+    h = 3
 
-    for i in range(img_length):
-        for j in range (img_width):
-            print("img")
-
-    # return
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            soma = 0
+            for k in range(i-int(h/2),i+int(h/2)+1):
+                for l in range(j-int(w/2),j+int(w/2)+1):
+                    soma = soma + img[k][l]
+            img_out[i][j] = soma/(h*w)
+            
+            print(img_out[i][j])
+            print(img[i][j])
+            
+    return img_out
 #-------------------------------
 
 def blur_separable ():
@@ -48,16 +58,20 @@ def integral ():
 
 def main ():
 
-    img = cv2.imread (INPUT_IMAGE, cv2.IMREAD_COLOR)
+    img = cv2.imread (INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
     if img is None:
         print ('Erro ao abrir a imagem: '+ INPUT_IMAGE +'\n')
         sys.exit ()
 
     print ('Sucesso ao abrir a imagem: '+ INPUT_IMAGE +'\n')
 
-    img = img.reshape ((img.shape [0], img.shape [1], img.shape [2]))
+    # img = img.reshape ((img.shape [0], img.shape [1], img.shape [2]))
+    img = img.reshape ((img.shape [0], img.shape [1], 1))
     img = img.astype (np.float32) / 255
 
+    img_out = cv2.imread (INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
+    img_out = img_out.reshape ((img.shape [0], img.shape [1], 1))
+    img_out = img_out.astype (np.float32) / 255
 
     option = -1
     while option != "0":
@@ -71,12 +85,14 @@ def main ():
 #--------------------------------------------
         if option == "1":
 
-            img_out = blur_ingenuo()
+            # img_out = 
+            blur_ingenuo(img, img_out)
 
             cv2.imshow("Blur Ingenuo",img_out)
+            cv2.imwrite ('02 - out.png', img_out*255)
 
-            cv2.waitKey ()
-            cv2.destroyAllWindows ()
+            # cv2.waitKey ()
+            # cv2.destroyAllWindows ()
 
 #--------------------------------------------
         if option == "2":
