@@ -24,6 +24,7 @@ W_SIZE = 7
 #TODO as funcoes
 
 def blur_ingenuo (img,img_out):
+    print("blur_ingenuo")
     img_length = img.shape[0]
     img_width = img.shape[1]
    
@@ -37,23 +38,65 @@ def blur_ingenuo (img,img_out):
                 for l in range(j-int(w/2),j+int(w/2)+1):
                     soma = soma + img[k][l]
             img_out[i][j] = soma/(h*w)
-            
-            print(img_out[i][j])
-            print(img[i][j])
+
             
     return img_out
 #-------------------------------
 
-def blur_separable ():
-    print("blur")
+def blur_separable (img,img_out):
+    print("blur_separable")
+
+    img_length = img.shape[0]
+    img_width = img.shape[1]
+   
+    w = 3
+    h = 3
+
+    img_sep = cv2.imread (INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
+    img_sep = img_sep.reshape ((img.shape [0], img.shape [1], 1))
+    img_sep = img_sep.astype (np.float32) / 255
+
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            soma = 0
+            for l in range(j-int(w/2),j+int(w/2)+1):
+                soma = soma + img[i][l]
+            img_sep[i][j] = soma/(w)
+
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            soma = 0
+            for k in range(i-int(h/2),i+int(h/2)+1):
+                soma = soma + img_sep[k][j]
+            img_out[i][j] = soma/(h)
+            
+    return img_out
     # return
 
 #-------------------------------
 
-def integral ():
+def integral (img,img_out):
     print("integral")
-    # return
 
+    integral = img_integral()
+
+    img_length = img.shape[0]
+    img_width = img.shape[1]
+   
+    w = 3
+    h = 3
+
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            print("IMG")
+
+    return img_out
+
+def img_integral():
+    print("Criando iamgem integral")
+
+
+    return integral
 #================================================================
 
 def main ():
