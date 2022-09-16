@@ -20,18 +20,21 @@ print (os.path.isfile(INPUT_IMAGE))
 INPUT_IMAGE = INPUT_IMAGE.replace("\\","/")
 W_SIZE = 7
 
+IN_IMG =  "Exemplos/b01 - Original.bmp"
+IN_IMG = os.path.join(sys.path[0], IN_IMG)
+print (os.path.isfile(IN_IMG))
+IN_IMG = IN_IMG.replace("\\","/")
+W_SIZE = 7
+
 #=================================================================
 
 #TODO as funcoes
 
-def blur_ingenuo (img,img_out):
+def blur_ingenuo (img,img_out, w, h):
     print("blur_ingenuo")
     img_length = img.shape[0]
     img_width = img.shape[1]
    
-    w = 7
-    h = 7
-
     for i in range(1, img_length):
         for j in range (1, img_width):
             soma = 0
@@ -46,16 +49,41 @@ def blur_ingenuo (img,img_out):
 
             
     return img_out
+
+def blur_ingenuo_colorido (img,img_out, w, h):
+    print("blur_ingenuo_colorido")
+    img_length = img.shape[0]
+    img_width = img.shape[1]
+   
+
+    for i in range(1, img_length):
+        for j in range (1, img_width):
+            soma = 0
+            soma2 = 0
+            soma3 = 0
+            div = 0
+            for k in range(i-int(h/2),i+int(h/2)+1):
+                for l in range(j-int(w/2),j+int(w/2)+1):
+                    if(k > 0 and k < img_length and l > 0 and l< img_width):
+                        soma = soma + img[k][l][0]
+                        soma2 = soma2 + img[k][l][1]
+                        soma3 = soma3 + img[k][l][2]
+                    else:
+                        div = div + 1
+            img_out[i][j][0] = soma/((h*w)-div)
+            img_out[i][j][1] = soma2/((h*w)-div)
+            img_out[i][j][2] = soma3/((h*w)-div)
+
+            
+    return img_out
 #-------------------------------
 
-def blur_separable (img,img_out):
+def blur_separable (img,img_out, w, h):
     print("blur_separable")
 
     img_length = img.shape[0]
     img_width = img.shape[1]
    
-    w = 11
-    h = 1
 
     img_sep = cv2.imread (INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
     img_sep = img_sep.reshape ((img.shape [0], img.shape [1], 1))
@@ -80,11 +108,51 @@ def blur_separable (img,img_out):
             img_out[i][j] = soma/(h)
             
     return img_out
-    # return
+
+def blur_separable_colorido (img,img_out, w, h):
+    print("blur_separable")
+
+    img_length = img.shape[0]
+    img_width = img.shape[1]
+   
+    # Leitura da imagem colorida
+    img_sep = cv2.imread (IN_IMG)
+    rows, cols, channels = img_sep.shape
+    img_sep = img_sep.astype (np.float32) / 255
+
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            soma = 0
+            soma1 = 0
+            soma2 = 0
+            for l in range(j-int(w/2),j+int(w/2)+1):
+                if(l > 0 and l < img_length):
+                    soma = soma + img[i][l][0]
+                    soma1 = soma1 + img[i][l][1]
+                    soma2 = soma2 + img[i][l][2]
+            img_sep[i][j][0] = soma/(w)
+            img_sep[i][j][1] = soma1/(w)
+            img_sep[i][j][2] = soma2/(w)
+
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            soma = 0
+            soma1 = 0
+            soma2 = 0
+            for l in range(i-int(h/2),i+int(h/2)+1):
+                if(l > 0 and l < img_length):
+                    soma = soma + img_sep[l][j][0]
+                    soma1 = soma1 + img_sep[l][j][1]
+                    soma2 = soma2 + img_sep[l][j][2]
+            img_out[i][j][0] = soma/(h)
+            img_out[i][j][1] = soma1/(h)
+            img_out[i][j][2] = soma2/(h)
+            
+    return img_out
 
 #-------------------------------
 
-def integral (img,img_out):
+def integral (img,img_out, w, h):
     print("integral")
     
     img_int = cv2.imread (INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
@@ -96,8 +164,6 @@ def integral (img,img_out):
     img_length = img.shape[0]
     img_width = img.shape[1]
    
-    w = 3
-    h = 3
     
     w2 = int(w/2) 
     h2 = int(h/2) 
@@ -106,7 +172,7 @@ def integral (img,img_out):
         for j in range (1, img_width-1):
             soma = 0
             if(i+w < img_length and j+h < img_width):
-                if((j-w2+1) < 0 and (i+h2+1) < 0):
+                if((j-w2-1) < 0 and (i-h2-1) < 0):
                     soma = img_int[i+h2][j+w2] - img_int[i+h2][0] - img_int[0][j+w2] + img_int[0][0]
                 elif((i-h2+1) < 0):
                     soma = img_int[i+h2][j+w2] - img_int[i+h2][j-w2-1] - img_int[0][j+w2] + img_int[0][j-w2-1]
@@ -141,18 +207,114 @@ def img_integral(img_int):
             img_int[i][j] = img_int[i][j] + img_int[i-1][j] + img_int[i][j-1] - img_int[i-1][j-1]
 
     return img_int
+
+
+def integral_colorida (img,img_out, w, h):
+    print("integral")
+    
+    # Leitura da imagem colorida
+    img_sep = cv2.imread (IN_IMG)
+    rows, cols, channels = img_sep.shape
+    img_sep = img_sep.astype (np.float32) / 255
+
+    img_sep = img_integral_col(img_sep)
+
+    img_length = img.shape[0]
+    img_width = img.shape[1]
+   
+    
+    w2 = int(w/2) 
+    h2 = int(h/2) 
+    
+    for i in range(1, img_length-1):
+        for j in range (1, img_width-1):
+            soma = 0
+            soma1 = 0
+            soma2 = 0
+            if(i+w < img_length and j+h < img_width):
+                if((j-w2-1) < 0 and (i-h2-1) < 0):
+                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][0][0] - img_sep[0][j+w2][0] + img_sep[0][0][0]
+                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][0][1] - img_sep[0][j+w2][1] + img_sep[0][0][0]
+                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][0][2] - img_sep[0][j+w2][2] + img_sep[0][0][0]
+                elif((i-h2+1) < 0):
+                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][j-w2-1][0] - img_sep[0][j+w2][0] + img_sep[0][j-w2-1][0]
+                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][j-w2-1][1] - img_sep[0][j+w2][1] + img_sep[0][j-w2-1][1]
+                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][j-w2-1][2] - img_sep[0][j+w2][2] + img_sep[0][j-w2-1][2]
+                elif((j-w2+1) < 0):
+                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][0][0] - img_sep[i-h2-1][j+w2][0] + img_sep[i-h2-1][0][0]
+                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][0][1] - img_sep[i-h2-1][j+w2][1] + img_sep[i-h2-1][0][1]
+                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][0][2] - img_sep[i-h2-1][j+w2][2] + img_sep[i-h2-1][0][2]
+                else:
+                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][j-w2-1][0] - img_sep[i-h2-1][j+w2][0] + img_sep[i-h2-1][j-w2-1][0]
+                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][j-w2-1][1] - img_sep[i-h2-1][j+w2][1] + img_sep[i-h2-1][j-w2-1][1]
+                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][j-w2-1][2] - img_sep[i-h2-1][j+w2][2] + img_sep[i-h2-1][j-w2-1][2]
+                img_out[i][j][0] = soma / (w*h)
+                img_out[i][j][1] = soma1 / (w*h)
+                img_out[i][j][2] = soma2 / (w*h)
+
+    for i in range(1, img_length):
+        img_out[i][0][0] = img[i][0][0]
+        img_out[i][0][1] = img[i][0][1]
+        img_out[i][0][2] = img[i][0][2] 
+        
+    for j in range (1, img_width):
+        img_out[0][j][0] = img[0][j][0] 
+        img_out[0][j][1] = img[0][j][1]
+        img_out[0][j][2] = img[0][j][2]
+
+    return img_out
+
+def img_integral_col(img_int):
+    print("Criando iamgem integral - colorida")
+    
+    img_length = img_int.shape[0]
+    img_width = img_int.shape[1]
+    
+    for i in range(1, img_length):
+        img_int[i][0][0] = img_int[i][0][0] + img_int[-1][0][0]
+        img_int[i][0][1] = img_int[i][0][1] + img_int[-1][0][1]
+        img_int[i][0][2] = img_int[i][0][2] + img_int[-1][0][2]
+        
+    for j in range (1, img_width):
+        img_int[0][j][0] = img_int[0][j][0] + img_int[0][j-1][0]
+        img_int[0][j][1] = img_int[0][j][1] + img_int[0][j-1][1]
+        img_int[0][j][2] = img_int[0][j][2] + img_int[0][j-1][2]
+        
+    for i in range(1, img_length):
+        for j in range (1, img_width):
+            img_int[i][j][0] = img_int[i][j][0] + img_int[i-1][j][0] + img_int[i][j-1][0] - img_int[i-1][j-1][0]
+            img_int[i][j][1] = img_int[i][j][1] + img_int[i-1][j][1] + img_int[i][j-1][1] - img_int[i-1][j-1][1]
+            img_int[i][j][2] = img_int[i][j][2] + img_int[i-1][j][2] + img_int[i][j-1][2] - img_int[i-1][j-1][2]
+
+    return img_int
+
 #================================================================
 
 def main ():
+    
+    # Leitura da imagem colorida
+    img_color = cv2.imread (IN_IMG)
+    if img_color is None:
+        print ('Erro abrindo %s' % IN_IMG)
+    rows, cols, channels = img_color.shape
+    
+    img_color = img_color.astype (np.float32) / 255
+    
+    img_color_out = cv2.imread (IN_IMG)
+    if img_color_out is None:
+        print ('Erro abrindo %s' % IN_IMG)
+    rows, cols, channels = img_color_out.shape
+    
+    img_color_out = img_color_out.astype (np.float32) / 255
 
+    # Leitura da imagem em escala de cinza   
     img = cv2.imread (INPUT_IMAGE, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        print ('Erro ao abrir a imagem: '+ INPUT_IMAGE +'\n')
+        print ('Erro ao abrir a imagem a01: '+ INPUT_IMAGE +'\n')
         sys.exit ()
 
-    print ('Sucesso ao abrir a imagem: '+ INPUT_IMAGE +'\n')
-
-    # img = img.reshape ((img.shape [0], img.shape [1], img.shape [2]))
+    print ('Sucesso ao abrir a imagem a01: '+ INPUT_IMAGE +'\n')
+    
     img = img.reshape ((img.shape [0], img.shape [1], 1))
     img = img.astype (np.float32) / 255
 
@@ -161,48 +323,59 @@ def main ():
     img_out = img_out.astype (np.float32) / 255
 
     option = -1
-    while option != "0":
-        option = input("\nDigite o numero de uma das opções abaixo! \n" +
+    option = input("\nDigite o numero de uma das opções abaixo! \n" +
                     "\tAlgoritmo ingenuo - 1 \n" +
                     "\tFiltro separavel - 2 \n" +
                     "\tAlgoritmo Imagens Integrais - 3 \n" +
                     "\tSair - 0 \n"
                 ).strip()
 
-        # h = input("Qual a altura da janela?")
-        # w = input("Qual a Largura da janela?")
+    h = int(input("Qual a altura da janela?"))
+    w = int(input("Qual a Largura da janela?"))
 #--------------------------------------------
-        if option == "1":
+    if option == "1":
 
-            # img_out = 
-            blur_ingenuo(img, img_out)
+        blur_ingenuo(img, img_out, h, w)
+        blur_ingenuo_colorido (img_color,img_color_out, h, w)
+            
+        cv2.imshow("Blur Ingenuo",img_color_out)
+        cv2.imwrite ('02 - colorida - out.png',img_color_out*255)
+        
+        cv2.imshow("Blur Ingenuo",img_out)
+        cv2.imwrite ('02 - out.png',img_out*255)
 
-            cv2.imshow("Blur Ingenuo",img_out)
-            cv2.imwrite ('02 - out.png', img_out*255)
-
-            # cv2.waitKey ()
-            # cv2.destroyAllWindows ()
-
-#--------------------------------------------
-        if option == "2":
-
-            img_out = blur_separable(img,img_out)
-
-            cv2.imshow("Filtro separavel",img_out)
-            cv2.imwrite ('02 - sep - out.png', img_out*255)
-
-            cv2.waitKey ()
-            cv2.destroyAllWindows ()
+        cv2.waitKey ()
+        cv2.destroyAllWindows ()
 
 #--------------------------------------------
-        if option == "3":
+    if option == "2":
 
-            img_out = integral(img,img_out)
-            cv2.imshow("Imagem integrais",img_out)
-            cv2.imwrite ('02 - int - out.png', img_out*255)
+        img_out = blur_separable(img,img_out, h, w)
+        img_color_out = blur_separable_colorido(img_color,img_color_out, h, w)
 
-            cv2.waitKey ()
-            cv2.destroyAllWindows ()
+        cv2.imshow("Filtro separavel",img_out)
+        cv2.imwrite ('02 - sep - out.png', img_out*255)
+            
+        cv2.imshow("Filtro separavel Colorido",img_color_out)
+        cv2.imwrite ('02 - sep_colorida - out.png',img_color_out*255)
+
+        cv2.waitKey ()
+        cv2.destroyAllWindows ()
+
+#--------------------------------------------
+    if option == "3":
+
+        img_out = integral(img,img_out, h, w)
+        img_color_out = integral_colorida(img_color,img_color_out, h, w)
+            
+        cv2.imshow("Imagem integrais",img_out)
+        cv2.imwrite ('02 - int - out.png', img_out*255)
+
+        cv2.imshow("Imagem integrais Colorida",img_color_out)
+        cv2.imwrite ('02 - int_colorida - out.png', img_color_out*255)
+
+        cv2.waitKey ()
+        cv2.destroyAllWindows ()
 
 
 
