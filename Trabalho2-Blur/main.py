@@ -122,31 +122,22 @@ def blur_separable_colorido (img,img_out, w, h):
 
     for i in range(1, img_length-1):
         for j in range (1, img_width-1):
-            soma = 0
-            soma1 = 0
-            soma2 = 0
-            for l in range(j-int(w/2),j+int(w/2)+1):
-                if(l > 0 and l < img_length):
-                    soma = soma + img[i][l][0]
-                    soma1 = soma1 + img[i][l][1]
-                    soma2 = soma2 + img[i][l][2]
-            img_sep[i][j][0] = soma/(w)
-            img_sep[i][j][1] = soma1/(w)
-            img_sep[i][j][2] = soma2/(w)
+            for k in range(3):
+                soma = 0
+                for l in range(j-int(w/2),j+int(w/2)+1):
+                    if(l > 0 and l < img_length):
+                        soma = soma + img[i][l][k]
+                img_sep[i][j][k] = soma/(w)
 
     for i in range(1, img_length-1):
         for j in range (1, img_width-1):
-            soma = 0
-            soma1 = 0
-            soma2 = 0
-            for l in range(i-int(h/2),i+int(h/2)+1):
-                if(l > 0 and l < img_length):
-                    soma = soma + img_sep[l][j][0]
-                    soma1 = soma1 + img_sep[l][j][1]
-                    soma2 = soma2 + img_sep[l][j][2]
-            img_out[i][j][0] = soma/(h)
-            img_out[i][j][1] = soma1/(h)
-            img_out[i][j][2] = soma2/(h)
+            for l in range(3):
+                soma = 0
+                for l in range(i-int(h/2),i+int(h/2)+1):
+                    if(l > 0 and l < img_length):
+                        soma = soma + img_sep[l][j][k]
+                img_out[i][j][k] = soma/(h)
+
             
     return img_out
 
@@ -228,29 +219,19 @@ def integral_colorida (img,img_out, w, h):
     
     for i in range(1, img_length-1):
         for j in range (1, img_width-1):
-            soma = 0
-            soma1 = 0
-            soma2 = 0
-            if(i+w < img_length and j+h < img_width):
-                if((j-w2-1) < 0 and (i-h2-1) < 0):
-                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][0][0] - img_sep[0][j+w2][0] + img_sep[0][0][0]
-                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][0][1] - img_sep[0][j+w2][1] + img_sep[0][0][0]
-                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][0][2] - img_sep[0][j+w2][2] + img_sep[0][0][0]
-                elif((i-h2+1) < 0):
-                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][j-w2-1][0] - img_sep[0][j+w2][0] + img_sep[0][j-w2-1][0]
-                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][j-w2-1][1] - img_sep[0][j+w2][1] + img_sep[0][j-w2-1][1]
-                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][j-w2-1][2] - img_sep[0][j+w2][2] + img_sep[0][j-w2-1][2]
-                elif((j-w2+1) < 0):
-                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][0][0] - img_sep[i-h2-1][j+w2][0] + img_sep[i-h2-1][0][0]
-                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][0][1] - img_sep[i-h2-1][j+w2][1] + img_sep[i-h2-1][0][1]
-                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][0][2] - img_sep[i-h2-1][j+w2][2] + img_sep[i-h2-1][0][2]
-                else:
-                    soma = img_sep[i+h2][j+w2][0] - img_sep[i+h2][j-w2-1][0] - img_sep[i-h2-1][j+w2][0] + img_sep[i-h2-1][j-w2-1][0]
-                    soma1 = img_sep[i+h2][j+w2][1] - img_sep[i+h2][j-w2-1][1] - img_sep[i-h2-1][j+w2][1] + img_sep[i-h2-1][j-w2-1][1]
-                    soma2 = img_sep[i+h2][j+w2][2] - img_sep[i+h2][j-w2-1][2] - img_sep[i-h2-1][j+w2][2] + img_sep[i-h2-1][j-w2-1][2]
-                img_out[i][j][0] = soma / (w*h)
-                img_out[i][j][1] = soma1 / (w*h)
-                img_out[i][j][2] = soma2 / (w*h)
+            for k in range(3):
+                soma = 0
+                if(i+w < img_length and j+h < img_width):
+                    if((j-w2-1) < 0 and (i-h2-1) < 0):
+                        soma = img_sep[i+h2][j+w2][k] - img_sep[i+h2][0][k] - img_sep[0][j+w2][k] + img_sep[0][0][k]
+                    elif((i-h2+1) < 0):
+                        soma = img_sep[i+h2][j+w2][k] - img_sep[i+h2][j-w2-1][k] - img_sep[0][j+w2][k] + img_sep[0][j-w2-1][k]
+                    elif((j-w2+1) < 0):
+                        soma = img_sep[i+h2][j+w2][k] - img_sep[i+h2][0][k] - img_sep[i-h2-1][j+w2][k] + img_sep[i-h2-1][0][k]
+                    else:
+                        soma = img_sep[i+h2][j+w2][k] - img_sep[i+h2][j-w2-1][k] - img_sep[i-h2-1][j+w2][k] + img_sep[i-h2-1][j-w2-1][k]
+                    img_out[i][j][k] = soma / (w*h)
+
 
     for i in range(1, img_length):
         img_out[i][0][0] = img[i][0][0]

@@ -7,7 +7,7 @@ import numpy as np
 
 #=================================================================
 
-INPUT_IMAGE =  "Wind Waker GC.bmp"
+INPUT_IMAGE =  "GT2.bmp"
 INPUT_IMAGE = os.path.join(sys.path[0], INPUT_IMAGE)
 
 img = cv2.imread(INPUT_IMAGE)
@@ -45,6 +45,9 @@ cv2.imshow('original', img)
 
 cv2.imshow('BlurSum', blurSum)
 cv2.imwrite ('BlurSum.png', blurSum*255)
+
+cv2.waitKey()
+cv2.destroyAllWindows()
 
 cv2.imshow('GaussianSum', gaussianSum)
 cv2.imwrite ('GaussianSum.png', gaussianSum*255)
