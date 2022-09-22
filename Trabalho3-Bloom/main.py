@@ -27,11 +27,6 @@ for i in range(3):
     sigma = 5*(4**i)
     vGau[i] = cv2.GaussianBlur(vGau[i], (0, 0), sigma)
     
-    cv2.imshow('original', vGau[i])
-    cv2.waitKey()
-
-    cv2.destroyAllWindows()
-    
 
 for i in range(3):
     for j in range(3):
@@ -57,11 +52,13 @@ cv2.waitKey()
 cv2.destroyAllWindows()
 
 cv2.imshow('Gaussian', gaussianSum)
+cv2.imwrite ('GaussianBlur.png', gaussianSum*255)
 cv2.waitKey()
 
 cv2.destroyAllWindows()
 
 cv2.imshow('Blur', blurSum)
+cv2.imwrite ('BlurSum.png', blurSum*255)
 cv2.waitKey()
 
 cv2.destroyAllWindows()
