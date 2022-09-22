@@ -52,7 +52,7 @@ cv2.waitKey()
 cv2.destroyAllWindows()
 
 cv2.imshow('Gaussian', gaussianSum)
-cv2.imwrite ('GaussianBlur.png', gaussianSum*255)
+cv2.imwrite ('Gaussian.png', gaussianSum*255)
 cv2.waitKey()
 
 cv2.destroyAllWindows()
