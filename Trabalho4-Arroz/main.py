@@ -32,19 +32,32 @@ def binarize(img):
 #---------------------------------
 #Função flood fill e detect blobs do trabalho 1
 def flood_fill(label, img, x, y):
-    img[x][y] = label
-    if x - 1 >= 0:
-        if img[x-1][y] == -1:
-            flood_fill(label, img, x-1, y)
-    if x + 1 < img.shape[0]:
-        if img[x+1][y] == -1:
-            flood_fill(label, img, x+1, y)
-    if y - 1 >= 0:
-        if img[x][y-1] == -1:
-            flood_fill(label, img, x, y-1)
-    if y + 1 < img.shape[1]:
-        if img[x][y+1] == -1:
-            flood_fill(label, img, x, y+1)
+    
+    # img[x][y] = label
+    # if x - 1 >= 0:
+    #     if img[x-1][y] == -1:
+    #         flood_fill(label, img, x-1, y)
+    # if x + 1 < img.shape[0]:
+    #     if img[x+1][y] == -1:
+    #         flood_fill(label, img, x+1, y)
+    # if y - 1 >= 0:
+    #     if img[x][y-1] == -1:
+    #         flood_fill(label, img, x, y-1)
+    # if y + 1 < img.shape[1]:
+    #     if img[x][y+1] == -1:
+    #         flood_fill(label, img, x, y+1)
+    
+    img[x,y] = label
+
+    for i in range(-1, 3, 2):
+        if (img[x][y+i] != None):
+            if img[x][y+i] == -1:
+                flood_fill(label, img, x, y+i)    
+                
+    for j in range(-1, 3, 2):
+        if (img[x+j][y] != None):
+            if img[x+j][y] == -1:
+                flood_fill(label, img, x+j, y)
 
 
 def detect_blobs(img, largura_min, altura_min, n_pixels_min):
