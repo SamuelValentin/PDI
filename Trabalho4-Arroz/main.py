@@ -124,24 +124,8 @@ def moda(componentes):
     arr = []
     for c in componentes:
         arr.append(c['n_pixels'])
-    arr.sort()
+    arr.sort(reverse=True)
     
-    # --------------- Sam
-    arr_copy = arr.copy()
-    
-    tam = len(arr)
-    dp = np.std(arr)
-    md = np.mean(arr)
-    
-    i = tam - 1
-    
-    while(dp - md > -10 and dp - md < 10):
-        arr_copy.remove[i]
-        dp = np.std(arr_copy)
-        md = np.mean(arr_copy)
-        i = i - 1
-
-    # --------------- Sam
 
     #step/passo - De quanto em quanto iremos agrupar os valores
     step = 35
@@ -158,25 +142,53 @@ def moda(componentes):
             i = i + 1
 
         size = size + step
-
-    #moda
-    moda = stats.mode(arr)[0]
-
-    #desvio padrão
-    dp = np.std(arr)
+        
+    # --------------- Sam
+    arr_copy = arr.copy()
     
-    print("moda: " + str(moda))
+    tam = len(arr)
+    dp = np.std(arr)
+    md = np.mean(arr)
+    
+    i = tam - 1
+    
+    while(dp > 80 and i > 2):
+        dp = np.std(arr_copy)
+        md = np.mean(arr_copy)
+        i = i - 1
+        arr_copy.pop(0)
+
+    # --------------- Sam
+
+    # #moda
+    # moda = stats.mode(arr)[0]
+
+    # #desvio padrão
+    # dp = np.std(arr)
+    
+    # print("moda: " + str(moda))
+    # print("desvio padrao: " + str(dp) )
+    
+    print("média: " + str(md))
     print("desvio padrao: " + str(dp) )
 
-    if moda > dp:
-        #Se a moda é maior que desvio padrão, diminuimos meio desvio padrão da moda
-        moda = moda - (0.5*dp)
+    # if moda > dp:
+    #     #Se a moda é maior que desvio padrão, diminuimos meio desvio padrão da moda
+    #     moda = moda - (0.5*dp)
 
+    # for c in arr:
+    #     #se o blob é maior que a moda, divide seu tamanho pela moda e pega o resto inteiro
+    #     if c > moda:
+    #         conta = int((c/moda))
+    #         count =  count + conta
+    #     else:
+    #         count = count + 1
+    
     for c in arr:
         #se o blob é maior que a moda, divide seu tamanho pela moda e pega o resto inteiro
-        if c > moda:
-            conta = int((c/moda))
-            count =  count + conta
+        if c > md*1.4:
+            conta = int((c/md))
+            count =  count + conta + 1
         else:
             count = count + 1
 
