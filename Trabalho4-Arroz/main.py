@@ -1,6 +1,6 @@
 #=================================================
 # Universidade Tecnologica Federal do Parana
-# Aluno: Yan Pietrzak Pinheiro
+# Alunos: Samuel Leal Valentin e Yan Pietrzak Pinheiro
 #=================================================
 
 import cv2
@@ -32,20 +32,6 @@ def binarize(img):
 #---------------------------------
 #Função flood fill e detect blobs do trabalho 1
 def flood_fill(label, img, x, y):
-    
-    # img[x][y] = label
-    # if x - 1 >= 0:
-    #     if img[x-1][y] == -1:
-    #         flood_fill(label, img, x-1, y)
-    # if x + 1 < img.shape[0]:
-    #     if img[x+1][y] == -1:
-    #         flood_fill(label, img, x+1, y)
-    # if y - 1 >= 0:
-    #     if img[x][y-1] == -1:
-    #         flood_fill(label, img, x, y-1)
-    # if y + 1 < img.shape[1]:
-    #     if img[x][y+1] == -1:
-    #         flood_fill(label, img, x, y+1)
     
     img[x,y] = label
 
@@ -139,11 +125,28 @@ def moda(componentes):
     for c in componentes:
         arr.append(c['n_pixels'])
     arr.sort()
+    
+    # --------------- Sam
+    arr_copy = arr.copy()
+    
+    tam = len(arr)
+    dp = np.std(arr)
+    md = np.mean(arr)
+    
+    i = tam - 1
+    
+    while(dp - md > -10 and dp - md < 10):
+        arr_copy.remove[i]
+        dp = np.std(arr_copy)
+        md = np.mean(arr_copy)
+        i = i - 1
+
+    # --------------- Sam
 
     #step/passo - De quanto em quanto iremos agrupar os valores
-    step=35
-    size=0
-    i =0
+    step = 35
+    size = 0
+    i = 0
 
     #Agrupa as medidas de tamanho de pixel dos blobs em grupos
     while size < arr[len(arr) - 1 ]:
@@ -161,6 +164,7 @@ def moda(componentes):
 
     #desvio padrão
     dp = np.std(arr)
+    
     print("moda: " + str(moda))
     print("desvio padrao: " + str(dp) )
 
