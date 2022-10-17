@@ -118,7 +118,7 @@ def detect_blobs(img, largura_min, altura_min, n_pixels_min):
 
 #-------------------------------------------
 
-def moda(componentes):
+def num_arroz(componentes):
 
     count = 0
     arr = []
@@ -126,7 +126,6 @@ def moda(componentes):
         arr.append(c['n_pixels'])
     arr.sort(reverse=True)
     
-
     #step/passo - De quanto em quanto iremos agrupar os valores
     step = 35
     size = 0
@@ -138,57 +137,37 @@ def moda(componentes):
         for c in arr:
             if c - size <= step and c - size > 0 :
                 arr[i] = size
-
             i = i + 1
 
         size = size + step
         
-    # --------------- Sam
     arr_copy = arr.copy()
     
     tam = len(arr)
+    # Desvio padrao
     dp = np.std(arr)
+    # Media
     md = np.mean(arr)
     
     i = tam - 1
-    
-    while(dp > 80 and i > 2):
+    while(dp > 60 and i > 2):
         dp = np.std(arr_copy)
         md = np.mean(arr_copy)
         i = i - 1
         arr_copy.pop(0)
-
-    # --------------- Sam
-
-    # #moda
-    # moda = stats.mode(arr)[0]
-
-    # #desvio padrão
-    # dp = np.std(arr)
+        
     
-    # print("moda: " + str(moda))
-    # print("desvio padrao: " + str(dp) )
-    
-    print("média: " + str(md))
-    print("desvio padrao: " + str(dp) )
-
-    # if moda > dp:
-    #     #Se a moda é maior que desvio padrão, diminuimos meio desvio padrão da moda
-    #     moda = moda - (0.5*dp)
-
-    # for c in arr:
-    #     #se o blob é maior que a moda, divide seu tamanho pela moda e pega o resto inteiro
-    #     if c > moda:
-    #         conta = int((c/moda))
-    #         count =  count + conta
-    #     else:
-    #         count = count + 1
+    print("Média: " + str(md))
+    print("Desvio padrao: " + str(dp) )
     
     for c in arr:
-        #se o blob é maior que a moda, divide seu tamanho pela moda e pega o resto inteiro
         if c > md*1.4:
             conta = int((c/md))
-            count =  count + conta + 1
+            dif = (c/md) - conta
+            if(dif > 0.3):
+                count =  count + conta + 1
+            else:
+                count =  count + conta 
         else:
             count = count + 1
 
@@ -220,7 +199,7 @@ def main():
         for c in componentes:
             cv2.rectangle (img_out, (c ['L'], c ['T']), (c ['R'], c ['B']), (0,0,255))
             cv2.rectangle (img2, (c ['L'], c ['T']), (c ['R'], c ['B']), (0,0,255))
-        count = moda(componentes)
+        count = num_arroz(componentes)
         print ('%d componentes detectados.' % count)
         cv2.imshow('Binarizada',img2)
         cv2.imshow('Original: ' + src.replace(".bmp","") + " Calculado: " + str(count), img_out)
