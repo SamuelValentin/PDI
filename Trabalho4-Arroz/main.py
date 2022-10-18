@@ -149,6 +149,7 @@ def num_arroz(componentes):
     # Media
     md = np.mean(arr)
     
+    # diminuindo o desvio padrao da lista de tamanhos tirando os valores extremos a cima para achar a média
     i = tam - 1
     while(dp > 60 and i > 2):
         dp = np.std(arr_copy)
@@ -160,11 +161,17 @@ def num_arroz(componentes):
     print("Média: " + str(md))
     print("Desvio padrao: " + str(dp) )
     
+    # contando quantos grãos de arroz tem em cada blob
     for c in arr:
+        # Evitando que graos de arroz que sejam levemente maior que a média entrem na conta como se fossem mais de 1 grao
+        # Caso o blob seja de um tamanho de um grao e meio, ele pode ser mais de 1 grao
         if c > md*1.4:
             conta = int((c/md))
             dif = (c/md) - conta
-            if(dif > 0.3):
+            # Como a conta é arredondado para baixo, caso o valor que sobra seja maior que 1/3, ele adiciona um
+            # Consideramos que um grao de arroz pode ser no minimo perto de 1/3
+            # Caso seja arredondado para perto de 1, menos que 1.4 nem entra aqui, mas nos casos de 2.4, 3.4 e outros vem parar aqui
+            if(dif > 0.2):
                 count =  count + conta + 1
             else:
                 count =  count + conta 
