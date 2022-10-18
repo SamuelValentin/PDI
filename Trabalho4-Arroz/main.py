@@ -149,14 +149,21 @@ def num_arroz(componentes):
     # Media
     md = np.mean(arr)
     
-    # diminuindo o desvio padrao da lista de tamanhos tirando os valores extremos a cima para achar a média
+    # diminuindo o desvio padrao da lista de tamanhos tirando os valores extremos para achar a média
     i = tam - 1
-    while(dp > 60 and i > 2):
+    while(dp > 60 and i > 2):           
         dp = np.std(arr_copy)
         md = np.mean(arr_copy)
         i = i - 1
-        arr_copy.pop(0)
         
+        maior = 0
+        for item in arr_copy:
+            vari = item - md    
+            if(maior < vari or maior < vari * (-1)):
+                maior = item
+            
+        arr_copy.remove(maior)
+
     
     print("Média: " + str(md))
     print("Desvio padrao: " + str(dp) )
@@ -183,7 +190,7 @@ def num_arroz(componentes):
 
 
 def main():
-    count =0
+    count = 0 
     for src in INPUT_IMAGES:
         input_img = os.path.join(sys.path[0], src)
         input_img = input_img.replace("\\","/")
