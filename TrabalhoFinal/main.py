@@ -1,3 +1,6 @@
+# WILLIAN ALBIERO SALLES <will.albiero@gmail.com>,
+
+
 # import the necessary packages
 import numpy as np
 import argparse
