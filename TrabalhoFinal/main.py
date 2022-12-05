@@ -1,33 +1,40 @@
-# WILLIAN ALBIERO SALLES <will.albiero@gmail.com>,
-
-
-# import the necessary packages
+import cv2 as cv
 import numpy as np
-import argparse
-import cv2
+from matplotlib import pyplot as plt
+from transform import find_circles
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-1", "-teste.png", required = True, help = "/")
-args = vars(ap.parse_args())
 
-# load the image, clone it for output, and then convert it to grayscale
-image = cv2.imread(args["teste.png"])
-output = image.copy()
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+img = cv.imread('teste2.jpg',0)
+img2 = img.copy()
+template = cv.imread('template.png',0)
+w, h = template.shape[::-1]
+# All the 6 methods for comparison in a list
+methods = ['cv.TM_CCOEFF', 'cv.TM_CCOEFF_NORMED', 'cv.TM_CCORR',
+            'cv.TM_CCORR_NORMED', 'cv.TM_SQDIFF', 'cv.TM_SQDIFF_NORMED']
 
-# detect circles in the image
-circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1.2, 100)
-# ensure at least some circles were found
-if circles is not None:
-	# convert the (x, y) coordinates and radius of the circles to integers
-	circles = np.round(circles[0, :]).astype("int")
-	# loop over the (x, y) coordinates and radius of the circles
-	for (x, y, r) in circles:
-		# draw the circle in the output image, then draw a rectangle
-		# corresponding to the center of the circle
-		cv2.circle(output, (x, y), r, (0, 255, 0), 4)
-		cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-	# show the output image
-	cv2.imshow("output", np.hstack([image, output]))
-	cv2.waitKey(0)
+circles, cs = find_circles(img)
+
+for circle in cs:
+    cv.imshow ('02 - out', circle)
+    cv.waitKey ()
+    cv.destroyAllWindows ()
+
+# for meth in methods:
+#     img = img2.copy()
+#     method = eval(meth)
+#     # Apply template Matching
+#     res = cv.matchTemplate(img,template,method)
+#     min_val, max_val, min_loc, max_loc = cv.minMaxLoc(res)
+#     # If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
+#     if method in [cv.TM_SQDIFF, cv.TM_SQDIFF_NORMED]:
+#         top_left = min_loc
+#     else:
+#         top_left = max_loc
+#     bottom_right = (top_left[0] + w, top_left[1] + h)
+#     cv.rectangle(img,top_left, bottom_right, 255, 2)
+#     plt.subplot(121),plt.imshow(res,cmap = 'gray')
+#     plt.title('Matching Result'), plt.xticks([]), plt.yticks([])
+#     plt.subplot(122),plt.imshow(img,cmap = 'gray')
+#     plt.title('Detected Point'), plt.xticks([]), plt.yticks([])
+#     plt.suptitle(meth)
+#     plt.show()
