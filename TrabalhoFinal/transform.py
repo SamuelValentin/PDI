@@ -85,12 +85,12 @@ def show(img, fourier, hist):
     plt.show()
 
 def main():
-    img = cv.imread('teste.jpg', 0)
+    img = cv.imread('teste2.jpg', 0)
     # img = np.ndarray((900, 900))
     # img = mapimgxy(img, lambda v, x, y: 255 if x >100 and x <150 and y >100 and y <150 else 0)
 
     _, cs = find_circles(img)
-    c = cs[0]
+    c = cs[2]
     
     f = fourier(c)
     h = mkhist(f)
