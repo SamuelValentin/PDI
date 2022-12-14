@@ -15,6 +15,7 @@ def templateMatch(img_rgb):
     maxT_val = 0
     maxT_tp = ''
 
+
     # Convert it to grayscale
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     w, h = img_gray.shape[::-1]
@@ -60,7 +61,7 @@ def templateMatch(img_rgb):
 
 def main():
     # Read the main image
-    img_rgb = cv2.imread('codigo/imgs/100t.png')
+    img_rgb = cv2.imread('template.png')
     
     tipo = templateMatch(img_rgb)
 
