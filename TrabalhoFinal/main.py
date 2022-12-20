@@ -20,12 +20,13 @@ def templateMatch(img_rgb):
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
     w, h = img_gray.shape[::-1]
 
-    templates = {'1h', '1t', '5h', '5t', '10h', '10t', '25h', '25t', '50h', '50t', '100h', '100t',}
+    templates = {'1h', '1t', '5h', '5t', '10h', '10t', '25h', '25t', '50h', '50t', '100h', '100t'}
     
     for tp in templates:
         
         # Read the template
         template = cv2.imread('codigo/imgs/'+tp+'.png', 0)
+        # template = cv2.imread('50s.png', 0)
 
         dim = (w, h)
         # resize image
@@ -49,11 +50,11 @@ def templateMatch(img_rgb):
         #     cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
     
         # Show the final image with the matched area.
-        print(min_val)
+        print(str(tp) + ": Min_val = " + str(max_val))
         print(res)
         
-        if(maxT_val < min_val):
-            maxT_val = min_val
+        if(maxT_val < max_val):
+            maxT_val = max_val
             maxT_tp = tp
             
     return maxT_tp
@@ -61,7 +62,7 @@ def templateMatch(img_rgb):
 
 def main():
     # Read the main image
-    img_rgb = cv2.imread('template.png')
+    img_rgb = cv2.imread('50x.png')
     
     tipo = templateMatch(img_rgb)
 
