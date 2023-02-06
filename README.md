@@ -102,12 +102,30 @@ Para rodar o arquivo "main.py" que esta no diretório "Trabalho2-Blur", basta te
 "$ python main.py"
 
 
-3 - Bloom lighting: 
+## 3 - Bloom lighting: 
 Para realizar esse trabalho foi utilizada a linguagem python e a biblioteca openCV.
 
-4 - Desafio de segmentação: -
+## 4 - Desafio de segmentação:
+Para realizar esse trabalho foi utilizada a linguagem python e a biblioteca openCV.
 
-5 - Chroma key: -
+## 5 - Chroma key:
+Para realizar esse trabalho foi utilizada a linguagem python e a biblioteca openCV.
 
-6 - Trabalho final: -
+## 6 - Trabalho final:
+Para realizar esse trabalho foi utilizada a linguagem python e a biblioteca openCV.
 
+Ideia: Enviar uma foto com algumas moedas em um fundo que seja possivel diferenciar nitidamente elas do fundo, depois conseguir extrair cada moeda da foto e classificar o tipo e valor de cada moeda.
+
+Desenvolvimento: Para conseguir solucionar esse problemas dividimos ele em duas partes: Encontrar e extrair cada moeda e depois pegar cada moeda encontrada e classificar
+
+1 - Encontrar e extrair:
+  Considerando os conhecimentos adquiridos na Disciplina de Processamento Digital de Imagens, decidimos usar a Transformada de Hough adpatada para a equação do circulo para encontrar as moedas. Usamos tanto uma versão nossa da função quanto a versão fornecida da bilbioteca openCV.
+  
+  Usando qualquer uma das funções que citamos, ambas retornam as cordenadas e o tamanho dos circulos encontrados e assim podemos indicar quais partes da imagem nós queremos recortar. Porém, para retornar os circulos que realmente queremos, foi preciso uma serie de testes e estudos para que os parâmetros fornecidos fossem adequados para nao encontrar circulos que surgiram de ruidos e não deixar de achar os circulos que realmente desejamos.
+   
+  
+2 - Classificar as moedas:
+  Para conseguir classificar as moedas poderiamos usar diversas abordagens, como por exemplo algo relacionado a aprendizagem de máquina, mas decidimos usar a ideia de Template Matching.
+  
+  Pegamos cada imagem de moeda extraidas da imagem original, transformamos elas em imagens de gradientes das moedas e usamos uma algorimo para comparar 
+com os templates que difinimos. Porém, temos o problemas das imagens estarem em uma rotação diferente das moedas usadas com template, assim nos usamos outro algoritmo para encontrar a direção dos gradientes das moedas, para assim rotacionar a imagem da moeda e deixar ela da melhor maneira para ser comparada com o template.
